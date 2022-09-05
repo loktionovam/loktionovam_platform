@@ -1,24 +1,24 @@
 # EX-13 K8s + Vault
 
 * [EX-13 K8s + Vault](#ex-13-k8s--vault)
-  * [EX-13.1 Что было сделано](#ex-131-%d0%a7%d1%82%d0%be-%d0%b1%d1%8b%d0%bb%d0%be-%d1%81%d0%b4%d0%b5%d0%bb%d0%b0%d0%bd%d0%be)
-  * [EX-13.2 Как запустить проект](#ex-132-%d0%9a%d0%b0%d0%ba-%d0%b7%d0%b0%d0%bf%d1%83%d1%81%d1%82%d0%b8%d1%82%d1%8c-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82)
-  * [EX-13.3 Как проверить проект](#ex-133-%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%be%d0%b2%d0%b5%d1%80%d0%b8%d1%82%d1%8c-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82)
-  * [EX-13.4 Как начать пользоваться проектом](#ex-134-%d0%9a%d0%b0%d0%ba-%d0%bd%d0%b0%d1%87%d0%b0%d1%82%d1%8c-%d0%bf%d0%be%d0%bb%d1%8c%d0%b7%d0%be%d0%b2%d0%b0%d1%82%d1%8c%d1%81%d1%8f-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82%d0%be%d0%bc)
+  * [EX-13.1 What was done](#ex-131-what-was-done)
+  * [EX-13.2 How to start the project](#ex-132-how-to-start-the-project)
+  * [EX-13.3 How to check the project](#ex-133-how-to-check-the-project)
+  * [EX-13.4 How to use the project](#ex-134-how-to-use-the-project)
 
-## EX-13.1 Что было сделано
+## EX-13.1 What was done
 
-* [x] Основное задание: установлен и инициализирован hashicorp vault HA с consul backend, заведены секреты
-* [x] Основное задание: включена авторизация через k8s
-* [x] Основное задание: настройка секретов для nginx через consul template и k8s авторизацию
-* [x] Основное задание: настроен pki на базе vault
-* [x] Основное задание: включен tls для vault
-* [x] Основное задание: настроено автообновление сертификатов для nginx с использованием vault inject
-* [x] Задание со(*): настроен autounseal с использованием Transit Secrets Engine второго vault
+* [x] Main task 1: install and initialize the hashicorp vault HA (consul backend), create the secrets
+* [x] Main task 2 : enable k8s authorization
+* [x] Main task 3: setup the nginx secrets via a consul template + k8s authorization
+* [x] Main task 4: setup the vault pki
+* [x] Main task 5: enable the vault tls
+* [x] Main task 6: setup nginx certificates autorotate by using the vault inject
+* [x] Advanced task (*): setup autounseal via Transit Secrets Engine of the second vault
 
-## EX-13.2 Как запустить проект
+## EX-13.2 How to start the project
 
-* Установить consul, vault
+* Install consul, vault
 
   ```bash
   git clone https://github.com/hashicorp/consul-helm.git
@@ -54,7 +54,7 @@
 
   ```
 
-* Инициализировать vault и распечатать все 3 инстанса:
+* initialize the vault and unseal all of three instances:
 
   ```bash
   kubectl exec -ti vault-0 -- vault operator init --key-shares=1 --key-threshold=1
@@ -84,7 +84,7 @@
 
   ```
 
-* Залогиниться в vault, вывести список секретов:
+* Login into the vault and print all its secrets:
 
   ```bash
   kubectl exec -it vault-0 -- vault login
@@ -112,7 +112,7 @@
   token/    token    auth_token_e837ff1f    token based credentials
   ```
 
-* Создать секреты:
+* Create the secrets:
 
   ```bash
   kubectl exec -it vault-0 -- vault secrets enable --path=otus kv
@@ -136,7 +136,7 @@
 
   ```
 
-* Включить k8s:
+* Enable k8s integration:
 
   ```bash
   kubectl exec -ti vault-0 -- vault auth enable kubernetes
@@ -159,19 +159,19 @@
   export CLUSTER_NAME=$(kubectl config current-context)
   export K8S_HOST=$(kubectl config view -o jsonpath="{.clusters[?(@.name==\"$CLUSTER_NAME\")].cluster.server}")
 
-  # Удалить все escape codes, управляющие цветом вывода, например "\x1b[31m" - красный
+  # remove all the escape codes that manage output colors, i.e. "\x1b[31m" - red
   sed 's/\x1b\[[0-9;]*m//g'
 
-  # Примечание: у меня эта команда работает некорректно, т.к. в config файле перечислено несколько контекстов
-  # и лучше не парсить структурированные файлы (json, xml, yaml и т. д.) с помощью sed/grep/awk
+  # note: this command will not work if there are the several contexts
+  # and it is better not to parse structured files (json, xml, yaml и т. д.) via sed/grep/awk
   export K8S_HOST=$(more ~/.kube/config | grep server |awk '/http/ {print $NF}')
 
-  # Это более корректный способ определения адреса k8s
+  # use jsonpath instead
   export CLUSTER_NAME=$(kubectl config current-context)
   export K8S_HOST=$(kubectl config view -o jsonpath="{.clusters[?(@.name==\"$CLUSTER_NAME\")].cluster.server}")
 
-  # но он тоже не будет работать, т.к. если используется minikube/kind, то адрес может быть localhost'ом и pod с vault не сможет подключиться к k8s (будет долбиться в свой localhost),
-  # поэтому правильно будет использовать внутренний адрес https://kubernetes.default.svc если vault находится в том же k8s кластере, что и SA
+  # but there are also pitfalls because if we use minikube/kind the address can be localhost and a pod with vault can't connect to the k8s cluster,
+  # as a solution we can use the internal address https://kubernetes.default.svc if the vault server is located in the same cluster that the SA
 
   export K8S_HOST='https://kubernetes.default.svc'
   ```
@@ -192,14 +192,14 @@
   bound_service_account_namespaces=default policies=otus-policy  ttl=24h
   ```
 
-* Проверить, что авторизация через k8s работает:
+* Check the k8s authorization out:
 
   ```bash
   kubectl run --generator=run-pod/v1 tmp  -i  --serviceaccount=vault-auth --image alpine:3.7 sleep 10000
   kubectl exec -ti tmp apk add curl jq
   ```
 
-  `curl --request POST --data '{"bar": "baz"}'   --header "X-Vault-Token:s.Hp2AAE8tukt42iPu5hisGBb5" $VAULT_ADDR/v1/otus/otus-rw/config` завершилась с ошибкой потому что в политиках для `otus/otus-rw/*` отсутствовал `update`, поэтому правильно будет:
+  `curl --request POST --data '{"bar": "baz"}'   --header "X-Vault-Token:s.Hp2AAE8tukt42iPu5hisGBb5" $VAULT_ADDR/v1/otus/otus-rw/config` completed with an error because there wasn't `update` in the policies for `otus/otus-rw/*` so the correct way will be:
 
   ```json
   path "otus/otus-rw/*" {
@@ -207,17 +207,17 @@
   }
   ```
 
-* Рендеринг файлов с секретами с помощью sidecar-контейнера с consul template:
+* The rendering of secret files via the consul template sidecar container:
 
   ```bash
   kubectl apply -f consul-template/configmap-example-vault-agent-config.yaml
   kubectl apply -f consul-template/example-k8s-spec.yml
 
-  # sidecar контейнер с consul template получил токен
+  # the consul template sidecar container got the token
   kubectl exec -ti vault-agent-example -c consul-template -- cat /home/vault/.vault-token
   s.o6WhySWAf27zQwF8Ygc6YDUw
 
-  # сходил в vault за секретами и отрендерил конфигурацию для nginx
+  # went to the vault for the secrets and rendered the nginx configuration
   kubectl exec -ti vault-agent-example -c consul-template  -- cat /etc/secrets/index.html
     <html>
     <body>
@@ -231,7 +231,7 @@
     </html>
     %
 
-  # nginx получил уже отрендеренный конфигурационный файл
+  # the nginx got already had been rendered configuration file
   kubectl exec -ti vault-agent-example -c nginx-container  -- cat /usr/share/nginx/html/index.html
     <html>
     <body>
@@ -246,7 +246,7 @@
     %
   ```
 
-* Использование Vault CA:
+* Usage of Vault CA:
 
   ```bash
   kubectl exec -it vault-0 -- vault secrets enable pki
@@ -380,23 +380,23 @@
   kubectl exec -it vault-0 -- vault write pki_int/revoke serial_number=71:0d:89:db:b8:8c:6f:d0:0a:f5:b1:46:65:52:1d:87:38:e2:28:60
   ```
 
-* Для включения tls в vault, нужно создать certificate signing request, подписать его Kubernetes CA (в принципе, можно использовать Vault CA), загрузить в k8s secrets и включить tls в конфигурации helm chart:
+* To enable tls in the vault we have to create a certificate signing request, sign it via Kubernetes CA (you can also use Vault CA), store in a k8s secrets and enable tls in the helm chart:
 
   ```bash
-  # Создаем сертификат
+  # create a certificate
   misc/scripts/create_cert_via_k8s.sh
 
-  # Загружаем сертификат в k8s secrets
+  # store in the secret
   misc/scripts/store_cert_to_k8s_secrets.sh
   ```
 
   ```bash
-  # применяем новую конфигурацию для vault со включенным tls
+  # apply a new vault configuration with enabled tls
   helm upgrade --install vault ./vault-helm --values vault.values.yaml
   ```
 
   ```bash
-  # проверяем, что теперь vault использует tls
+  # test that the vault uses tls
   kubectl port-forward svc/vault 8200:8200
   curl --cacert /tmp/vault.ca \
       -H "X-Vault-Token: s.nYJq9PW1SMF0uj7M91s2Q1wv" \
@@ -407,15 +407,15 @@
 
   ```
 
-* Автоматическое обновление сертификата в контейнере:
+* Autorenew a certificate inside a container:
 
   ```bash
-  # Создаем docker image с nginx и включенным ssl
+  # create a nginx docker image with enabled ssl
   cd kubernetes-vault/nginx
   docker build  -t loktionovam/web-ssl:0.1.0 .
   docker push loktionovam/web-ssl:0.1.0
 
-  # создаем политику по обновлению сертификатов и роль renew-pki
+  # create the certificate autorenew policy and renew-pki role
   kubectl cp pki-policy.hcl vault-0:/tmp
   kubectl exec -it vault-0 -- vault policy write pki-policy /tmp/pki-policy.hcl
 
@@ -424,10 +424,10 @@
         bound_service_account_namespaces=default policies=pki-policy  ttl=24h
   ```
 
-* **Задача со** (*) Autounseal с использованием Transit Secrets Engine другого Vault (vault-transit):
+* **Advanced task** (*) Autounseal by using Transit Secrets Engine of an another Vault (vault-transit):
 
   ```bash
-  # настраиваем новый vault в котором будет включен Transit Secrets Engine
+  # setup a new vault where we will enable Transit Secrets Engine
   cp misc/scripts/vault_transit_cert.conf misc/scripts/vault_cert.conf
   misc/scripts/create_cert_via_k8s.sh
   misc/scripts/store_cert_to_k8s_secrets.sh
@@ -458,7 +458,7 @@
   ```
 
   ```bash
-  # создаем token для доступа к vault-transit и загружаем его, как k8s secrets vault-transit-token
+  # create a token to access to a vault-transit and create vault-transit-token (k8s secrets)
   vault exec -ti vault-transit-0 -- /bin/sh
   vault token create -policy="autounseal" -wrap-ttl=120
   Key                              Value
@@ -487,10 +487,10 @@
   ```
 
   ```bash
-  # устанавливаем vault со включенным unseal через transit
+  # install the vault with enabled unseal via transit
 
   helm upgrade --install vault ./vault-helm --values vault.values.yaml
-  # если vault для которого настраивается unseal - новая инсталляция
+  # if this is a new vault
   kubectl exec -ti vault-0 -- vault operator init -recovery-shares=1 -recovery-threshold=1
   Recovery Key 1: 2Ev9WRlPyPoheXuWWz+iXFzu3GKqqkg81cLzSLF5JsI=
 
@@ -501,12 +501,12 @@
   Recovery key initialized with 1 key shares and a key threshold of 1. Please
   securely distribute the key shares printed above.
 
-  # если уже существует инсталляция, нужно сделать unseal migration
+  # if this is the already existed installation we need to do unseal migrate
   kubectl exec -ti vault-0 -- vault operator unseal -migrate
   ```
 
   ```bash
-  # Проверим, что unseal работает - удалим pod, контроллер пересоздаст новый и новый pod будет autounsealed
+  # check that unseal works - remove a  pod, a controller will recreate the new one and it will be unsealed
   kubectl delete pods/vault-0
   kubectl logs vault-0
   ==> Vault server configuration:
@@ -538,12 +538,12 @@
 
   ```
 
-## EX-13.3 Как проверить проект
+## EX-13.3 How to check the project
 
-* Сертификат nginx до обновления:
+* The nginx certificate before renew:
  ![nginx-before-renew](img/ex-13-kubernetes-vault-cert-1.png)
 
-* Сертификат nginx после обновления:
+* The nginx certificate after renew:
 ![nginx-after-renew](img/ex-13-kubernetes-vault-cert-2.png)
 
-## EX-13.4 Как начать пользоваться проектом
+## EX-13.4 How to use the project

@@ -1,55 +1,55 @@
-# EX-8 Шаблонизация манифестов Kubernetes
+# EX-8 Templating Kubernetes manifests
 
-* [EX-8 Шаблонизация манифестов Kubernetes](#ex-8-%d0%a8%d0%b0%d0%b1%d0%bb%d0%be%d0%bd%d0%b8%d0%b7%d0%b0%d1%86%d0%b8%d1%8f-%d0%bc%d0%b0%d0%bd%d0%b8%d1%84%d0%b5%d1%81%d1%82%d0%be%d0%b2-kubernetes)
-  * [EX-8.1 Что было сделано](#ex-81-%d0%a7%d1%82%d0%be-%d0%b1%d1%8b%d0%bb%d0%be-%d1%81%d0%b4%d0%b5%d0%bb%d0%b0%d0%bd%d0%be)
-  * [EX-8.2 Как запустить проект](#ex-82-%d0%9a%d0%b0%d0%ba-%d0%b7%d0%b0%d0%bf%d1%83%d1%81%d1%82%d0%b8%d1%82%d1%8c-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82)
-  * [EX-8.3 Как проверить проект](#ex-83-%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%be%d0%b2%d0%b5%d1%80%d0%b8%d1%82%d1%8c-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82)
-  * [EX-8.4 Как начать пользоваться проектом](#ex-84-%d0%9a%d0%b0%d0%ba-%d0%bd%d0%b0%d1%87%d0%b0%d1%82%d1%8c-%d0%bf%d0%be%d0%bb%d1%8c%d0%b7%d0%be%d0%b2%d0%b0%d1%82%d1%8c%d1%81%d1%8f-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82%d0%be%d0%bc)
+* [EX-8 Templating Kubernetes manifests](#ex-8-%d0%a8%d0%b0%d0%b1%d0%bb%d0%be%d0%bd%d0%b8%d0%b7%d0%b0%d1%86%d0%b8%d1%8f-%d0%bc%d0%b0%d0%bd%d0%b8%d1%84%d0%b5%d1%81%d1%82%d0%be%d0%b2-kubernetes)
+  * [EX-8.1 What was done](#ex-81-%d0%a7%d1%82%d0%be-%d0%b1%d1%8b%d0%bb%d0%be-%d1%81%d0%b4%d0%b5%d0%bb%d0%b0%d0%bd%d0%be)
+  * [EX-8.2 How to start the project](#ex-82-%d0%9a%d0%b0%d0%ba-%d0%b7%d0%b0%d0%bf%d1%83%d1%81%d1%82%d0%b8%d1%82%d1%8c-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82)
+  * [EX-8.3 How to check the project](#ex-83-%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%be%d0%b2%d0%b5%d1%80%d0%b8%d1%82%d1%8c-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82)
+  * [EX-8.4 How to use the project](#ex-84-%d0%9a%d0%b0%d0%ba-%d0%bd%d0%b0%d1%87%d0%b0%d1%82%d1%8c-%d0%bf%d0%be%d0%bb%d1%8c%d0%b7%d0%be%d0%b2%d0%b0%d1%82%d1%8c%d1%81%d1%8f-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82%d0%be%d0%bc)
 
-## EX-8.1 Что было сделано
+## EX-8.1 What was done
 
-* В скрипты бутстрапа добавлена установка и настройка gcloud, установка terraform, tflint, helm3, helmfile, kubecfg, qbec, jsonnet
-* Добавлена конфигурация terraform для развертывания GKE
-* Добавлен манифест `ClusterIssuer` для cert-manager
-* Добавлены `values.yaml` для `chartmuseum`
-* (*) Изучение работы с `chartmuseum`
-* Установлен `harbor` со включенным TLS и валидным сертификатом
-* (*) Написан `helmfile` для установки `nginx-ingress`, `cert-manager`, `harbor`
+* Added installation of gcloud, terraform, tflint, helm3, helmfile, kubecfg, qbec, jsonnet to the bootstrap scripts
+* Added a GKE terraform configuration
+* Main task 1: Added `ClusterIssuer` manifest for cert-manager
+* Main task 2: Added `values.yaml` for `chartmuseum`
+* (*) Advanced task 1: Working with `chartmuseum`
+* Main task 3: installing `harbor` with enabled TLS and a valid certificate
+* (*) Advanced task 2: developing a `helmfile` to install `nginx-ingress`, `cert-manager`, `harbor`
 * Добавлены `hipster-shop` и `frontend` helm chart
-* (*) Использован redis community chart в качестве зависимости для `hipster-shop`
-* Добавлен файл с секретами в `frontend` chart, секрет добавлен в k8s с помощью `helm secrets`, описана работа с секретами.
-* Сервисы `paymentservice`, `shippingservice` шаблонизированы через `kubecfg`
-* (*) Сервис `adservice` шаблонизирован через `qbec`
-* Сервис `cartservice` шаблонизирован через `kustomize`
+* (*) Advanced task 3: usage of redis community chart as a dependency for `hipster-shop` chart
+* Main task 4: secrets for `frontend` chart, working with `helm secrets`, described working with secrets.
+* Main task 5: services `paymentservice`, `shippingservice` are templated via `kubecfg`
+* (*) Advanced task 4: service `adservice` is templated via `qbec`
+* Main task 6: `cartservice` is templated via `kustomize`
 
-Описание работы с `helm secrets`:
+How to work with `helm secrets`:
 
-* Проверить секреты можно командой:
+* You can check the secrets out:
 
   ```bash
   get secrets sh.helm.release.v1.frontend.v2  -n hipster-shop  -o=jsonpath='{.data.release}' | base64 --decode
   ```
 
-* Способ использования в CI/CD аналогичен `ansible-vault` - в репозитории хранятся зашифрованные данные, а в переменных окружения CI/CD есть ключ `(masked, protected)` для расшифровки этих данных в процессе исполнения задач конвейера.
-* Пользоваться секретами, которые "лежат" в репозитории не очень хорошая практика, т.к. можно их случайно закоммитить и придется переписывать историю удаленного репозитория, что может повлиять на остальных участников разработки. С другой стороны, хранить их вне репозитория, может быть неудобно, поэтому как компромиссное решение можно:
-  * Создать каталог `secrets` внутри репозитория в котором будет отдельный `.gitignore`:
+* The way of the usage in CI/CD is similar to the `ansible-vault` - the encrypted data is stored in the repository and CI/CD environment variable stores the key `(masked, protected)` to decrypt this data while a CI/CD process is running:
+* Usage of the secrets which are located in the repository is not good practice because you can accidentally commit them and thus you must rewrite a project commit history which can greatly impact other participants of a development process. On the other hand storing them outside of the repository might be inconvenient so as a compromise decision you can:
+  * Create a directory named`secrets` inside the repository where there will be `.gitignore`:
 
     ```bash
-    # считаем, что все данные в этом каталоге не должны попадать в удаленный гит-репозиторий.
+    # assume that the data inside this directory must not be committed and pushed to a remote repository
     cat secrets/.gitignore
     *
     !.gitignore
     ```
 
-    Это явно укажет, в каком каталоге секретные данные (не размазывая их по всему репозиторию) и снизит риск случайных ошибок в корневом `.gitignore` файле. Например, если переименовать `secrets` в `ssl`, то исключения для этого каталога сохранятся без дополнительных правок `.gitignore`.
+    This explicitly points to which directory contains the secret data (without "spreading" them on the whole repository) and decreases the risk of errors in the root `.gitignore`. For instance, if we rename `secrets` directory to `ssl` the excluding rules will be automatically saved without additional rewrites of `.gitignore`.
 
-  * Использовать хуки гита, для фильтрации секретных данных <https://github.com/futuresimple/helm-secrets#important-tips>
+  * Use git hooks for filtering secret data <https://github.com/futuresimple/helm-secrets#important-tips>
 
-    Эти два способа можно комбинировать друг с другом.
+    You can combine these two methods
 
-## EX-8.2 Как запустить проект
+## EX-8.2 How to start the project
 
-* Запустить кластер GKE
+* Start GKE cluster
 
   ```bash
   cd infra/kubernetes/terraform
@@ -64,13 +64,13 @@
   kubernetes_endpoint = ip_address_here
   ```
 
-* Настроить kubectl на использование GKE
+* Setup kubectl to use GKE
 
   ```bash
   gcloud beta container clusters get-credentials primary --zone <zone_here>
   ```
 
-* Установить nginx-ingress
+* Install nginx-ingress
 
   ```bash
   helm repo add stable https://kubernetes-charts.storage.googleapis.com
@@ -79,7 +79,7 @@
   helm upgrade --install nginx-ingress stable/nginx-ingress --wait --namespace=nginx-ingress --version=1.11.1
   ```
 
-* Установить `cert-manager`
+* Install `cert-manager`
 
   ```bash
   helm repo add jetstack https://charts.jetstack.io
@@ -90,17 +90,17 @@
   kubectl apply -f kubernetes-templating/cert-manager/cluster-issuer.yaml
   ```
 
-* Установить `chartmuseum`
+* Install `chartmuseum`
 
   ```bash
   kubectl apply -f kubernetes-templating/chartmuseum/namespace.yaml
   helm upgrade --install chartmuseum stable/chartmuseum --wait --namespace=chartmuseum --version=2.3.2 -f kubernetes-templating/chartmuseum/values.yaml
   ```
 
-* (*) Работа с `chartmuseum`. Для проверки написан скрипт `misc/scripts/check_chartmuseum.sh`, который создает тестовый чарт, загружает его в `chartmuseum`, выводит информацию о загруженном артефакте, подключает репозиторий с `chartmuseum`, в режиме `dry-run` "устанавливает" чарт в k8s, а затем удаляет его из `chartmuseum`
+* (*) Working with the `chartmuseum`. Use `misc/scripts/check_chartmuseum.sh` to create a test chart, upload it to the `chartmuseum`, print the information about the uploaded artifact, add the `chartmuseum` repository in `dry-run` mode, "install" the chart into k8s, and finally delete the chart from the `chartmuseum`
 
   ```bash
-  # Предполагается, что доступ к API разрешен (см. values.yaml для chartmuseum)
+  # we assume that the access to API is granted (look to chartmuseum's values.yaml )
   misc/scripts/check_chartmuseum.sh
   Create test helm package check_chartmuseum
   Creating check_chartmuseum
@@ -143,7 +143,7 @@
   "chartmuseum" has been removed from your repositories
   ```
 
-* Установить `harbor`
+* Install the `harbor`
 
   ```bash
   helm repo add harbor https://helm.goharbor.io
@@ -151,14 +151,14 @@
   helm upgrade --install harbor harbor/harbor --atomic --namespace=harbor --version=1.1.2  -f kubernetes-templating/harbor/values.yaml
   ```
 
-* Установить `harbor` с помощью `helmfile`
+* Install the `harbor` via `helmfile`
 
   ```bash
   cd kubernetes-templating/helmfile/
   helmfile --log-level=debug --interactive apply
   ```
 
-* Установить `hipster-shop`
+* Install the `hipster-shop`
 
   ```bash
   kubectl create ns hipster-shop
@@ -166,20 +166,20 @@
   # helm dep update kubernetes-templating/hipster-shop
   ```
 
-* Создать `helm` пакет для `hipster-shop`
+* Crete a `hipster-shop` `helm` package
 
   ```bash
   helm package kubernetes-templating/hipster-shop
   ```
 
-* Установить компоненты магазина `paymentservice`, `shippingservice` через `kubecfg`:
+* Install the `paymentservice`, `shippingservice` via `kubecfg`:
 
   ```bash
   cd kubernetes-templating/kubecfg/
   kubecfg update services.jsonnet --namespace hipster-shop
   ```
 
-* Установить компоненту магазина `adservice` через `qbec` (краткое `how-to` по `qbec` здесь <https://habr.com/ru/post/481662/#qbec>)
+* Install the `adservice` via `qbec` (a `how-to` about `qbec` is here <https://habr.com/ru/post/481662/#qbec>)
 
   ```bash
   cd kubernetes-templating/jsonnet/qbec/adservice/
@@ -187,24 +187,24 @@
   qbec apply default
   ```
 
-* Установить компоненту магазина `cartservice` через `kustomize`
+* Install the `cartservice` via `kustomize`
 
   ```bash
   kubectl kustomize kubernetes-templating/kustomize/overrides/default/  | kubectl apply -f -
   ```
 
-## EX-8.3 Как проверить проект
+## EX-8.3 How to check the project
 
-* `harbor` с загруженными чартами будет доступен по адресу:
+* Check out the address of installed `harbor`:
 
   ```bash
   kubectl get ingress -n harbor  -o jsonpath='{.items[*].spec.rules[*].host}'
   ```
 
-* `hipster-shop` будет доступен по адресу:
+* Check out the `hipster-shop`:
 
   ```bash
   kubectl get ingress -n hipster-shop  -o jsonpath='{.items[*].spec.rules[*].host}'
   ```
 
-## EX-8.4 Как начать пользоваться проектом
+## EX-8.4 How to use the project

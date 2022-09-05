@@ -24,21 +24,21 @@ kubernetes-vault: [![Build Status](https://travis-ci.com/otus-kuber-2019-12/lokt
 
 loktionovam Platform repository
 
-## Настройка репозитория
+## Setup the repository
 
-* Запустить `bootstrap/scripts/bootstrap.sh`, чтобы установить kubectl, minikube, k9s, kind
+* Launch `bootstrap/scripts/bootstrap.sh` to install kubectl, minikube, k9s, kind
 
-## Домашние задания
+## Homeworks
 
-| Выполненные домашние задания                                                                                                                                          |
-|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [**EX-2: kubernetes-intro**](doc/ex-2-kubernetes-intro.md)<br/>Настройка локального окружения. Запуск первого контейнера. Работа с kubectl                            |
-| [**EX-3: kubernetes-controllers**](doc/ex-3-kubernetes-controllers.md)<br/>Kubernetes controllers. ReplicaSet, Deployment, DaemonSet                                  |
-| [**EX-4: kubernetes-security**](doc/ex-4-kubernetes-security.md)<br/>Настройка аккаунтов и прав для них, настройка ограничений и политик безопасности для контейнеров |
-| [**EX-5: kubernetes-networks**](doc/ex-5-kubernetes-networks.md)<br/>Сетевое взаимодействие Pod, сервисы                                                              |
-| [**EX-6: kubernetes-volumes**](doc/ex-6-kubernetes-volumes.md)<br/>Volumes, Storages, StatefulSet                                                                     |
-| [**EX-8: kubernetes-templating**](doc/ex-8-kubernetes-templating.md)<br/>Шаблонизация манифестов в Kubernetes                                                         |
-| [**EX-9: kubernetes-operators**](doc/ex-9-kubernetes-operators.md)<br/>Custom Resource Definition. Operators                                                          |
-| [**EX-10: kubernetes-monitoring**](doc/ex-10-kubernetes-monitoring.md)<br/>Мониторинг сервиса в кластере k8s                                                          |
-| [**EX-11: kubernetes-logging**](doc/ex-11-kubernetes-logging.md)<br/>Сервисы централизованного логирования для kubernetes                                             |
-| [**EX-13: kubernetes-vault**](doc/ex-13-kubernetes-vault.md)<br/>Hashicorp Vault +K8s                                                                                 |
+| Completed homeworks                                                                                                                    |
+|:------------------------------------------------------------------------------------------------------------------------------------------------|
+| [**EX-2: kubernetes-intro**](doc/ex-2-kubernetes-intro.md)<br/>Setup a local environment. Launch a first container. Working with kubectl        |
+| [**EX-3: kubernetes-controllers**](doc/ex-3-kubernetes-controllers.md)<br/>Kubernetes controllers. ReplicaSet, Deployment, DaemonSet            |
+| [**EX-4: kubernetes-security**](doc/ex-4-kubernetes-security.md)<br/>Setup accounts and permissions, setup containers restrictions and policies |
+| [**EX-5: kubernetes-networks**](doc/ex-5-kubernetes-networks.md)<br/>Network interaction of Pods and Services                                                      |
+| [**EX-6: kubernetes-volumes**](doc/ex-6-kubernetes-volumes.md)<br/>Volumes, Storages, StatefulSet                                               |
+| [**EX-8: kubernetes-templating**](doc/ex-8-kubernetes-templating.md)<br/>Templating Kubernetes manifests                                        |
+| [**EX-9: kubernetes-operators**](doc/ex-9-kubernetes-operators.md)<br/>Custom Resource Definition. Operators                                    |
+| [**EX-10: kubernetes-monitoring**](doc/ex-10-kubernetes-monitoring.md)<br/>Monitoring the cluster components and the applications                                                         |
+| [**EX-11: kubernetes-logging**](doc/ex-11-kubernetes-logging.md)<br/>Centralized Logging                                                        |
+| [**EX-13: kubernetes-vault**](doc/ex-13-kubernetes-vault.md)<br/>Hashicorp Vault +K8s                                                           |

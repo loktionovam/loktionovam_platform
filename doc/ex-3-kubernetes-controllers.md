@@ -1,24 +1,24 @@
 # EX-3 Kubernetes controllers. ReplicaSet, Deployment, DaemonSet
 
 * [EX-3 Kubernetes controllers. ReplicaSet, Deployment, DaemonSet](#ex-3-kubernetes-controllers-replicaset-deployment-daemonset)
-  * [EX-3.1 Что было сделано](#ex-31-%d0%a7%d1%82%d0%be-%d0%b1%d1%8b%d0%bb%d0%be-%d1%81%d0%b4%d0%b5%d0%bb%d0%b0%d0%bd%d0%be)
-  * [EX-3.2 Как запустить проект](#ex-32-%d0%9a%d0%b0%d0%ba-%d0%b7%d0%b0%d0%bf%d1%83%d1%81%d1%82%d0%b8%d1%82%d1%8c-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82)
-  * [EX-3.3 Как проверить проект](#ex-33-%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%be%d0%b2%d0%b5%d1%80%d0%b8%d1%82%d1%8c-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82)
-  * [EX-3.4 Как начать пользоваться проектом](#ex-34-%d0%9a%d0%b0%d0%ba-%d0%bd%d0%b0%d1%87%d0%b0%d1%82%d1%8c-%d0%bf%d0%be%d0%bb%d1%8c%d0%b7%d0%be%d0%b2%d0%b0%d1%82%d1%8c%d1%81%d1%8f-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82%d0%be%d0%bc)
+  * [EX-3.1 What was done](#ex-31-what-was-done)
+  * [EX-3.2 How to start the project](#ex-32-how-to-start-the-project)
+  * [EX-3.3 How to check the project](#ex-33-how-to-check-the-project)
+  * [EX-3.4 How to use the project](#ex-34-how-to-use-the-project)
 
-* [x] Основное задание: написать **ReplicaSet** для **hipster-frontend** и **hipster-paymentservice**. Проверить управление подами через ReplicaSet. Проверить обновление через ReplicaSet, объяснить, почему обновление ReplicaSet не повлекло обновление подов.
+* [x] Main task 1: write a **ReplicaSet** for **hipster-frontend** and **hipster-paymentservice**. Check out pod management and updating via ReplicaSet and explain why does updating of ReplicaSet not lead to updating of pods.
 
-* [x] Основное задание: написать **Deployment** для **hipster-frontend** и **hipster-paymentservice**. Проверка **Rolling Update** через написанные деплойменты. Проверка отката.
-* [x] Задание со (*): реализовано **Blue-green deployment** и **Reverse Rolling Update**
-* [x] Основное задание: работа с **probes**. Проверка обновления приложения при некорректной работе приложения, автоатический откат приложения.
-* [x] Задание со (*): написать **DaemonSet** для установки **prometheus node exporter**
-* [x] Задание с (**): развертывание **node exporter** на мастер ноды. Работа с taints и tolerations
+* [x] Main task 2: write a **Deployment** for **hipster-frontend** and **hipster-paymentservice**. Check out **Rolling Update** via these deployments. Check out a rollback.****
+* [x] Advanced task 1 (*): **Blue-green deployment** and **Reverse Rolling Update**
+* [x] Main task 3: working with **probes**. Rollout and rollback of a broken application
+* [x] Advanced task (*): develop a **DaemonSet** to install **prometheus node exporter**
+* [x] Advanced task (**): deployment of **node exporter** to master nodes. Taints и tolerations
 
-## EX-3.1 Что было сделано
+## EX-3.1 What was done
 
-* Развернут kind с тремя воркер-нодами и тремя мастер-нодами.
-* Запущен **replicaset** для **hipster-frontend**, проверено обновление репликасета, проверено автоматический перезапуск подов при удалении.
-  Почему обновление **ReplicaSet** не повлекло обновление запущенных **pod**: из документации к **ReplicaSet**
+* Deployed a k8s kind cluster (3 worker and 3 master nodes)
+* Created and updated **hipster-frontend** **replicaset**. Checked out an automatic pod restarting after deletion
+  The updating of **ReplicaSet** does not lead to updating already launched **pods** is explained in **ReplicaSet** documentation
   <https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#example>
 
   ```plain
@@ -27,14 +27,14 @@
   To update Pods to a new spec in a controlled way, use a Deployment, as ReplicaSets do not support a rolling update directly.
   ```
 
-  то есть **ReplicaSet** не умеет обновлять существующие **Pod** при изменении тэга образа. Для этих целей, нужно использовать **Deployment**.
+  i.e. **ReplicaSet** can not update already existing **Pods** after an image tag was changed. Instead use **Deployment** for this.
 
-* Запущен **deployment** для **hipster-frontend**, проверено обновление деплоймента.
-* Собран из запушен в dockerhub образ **hipster-paymentservice**.
-* Написаны и проверены манифесты для **Blue green deploy** и **Reverse Rolling update**.
-* Проверено обновление "плохого" приложения, через изменение **readiness probe** для **hipster-frontend**
-* Написан DaemonSet манифест для node-exporter с поддержкой развертывания на control plane ноды:
-  **Control plane nodes** имеют такой **taints**:
+* Created, updated and tested **hipster-frontend** **deployment**
+* Builded and pushed **hipster-paymentservice** image.
+* Developed and tested **Blue green deploy** and **Reverse Rolling update** manifests.
+* Tested the updating of "buggy" application via **hipster-frontend** **readiness probe**
+* Developed node-exporter `DaemonSet` manifest that supports deployment to control plane nodes:
+  **Control plane nodes** have **taints**:
 
   ```yaml
       taints:
@@ -42,15 +42,15 @@
         key: node-role.kubernetes.io/master
   ```
 
-  который означает, что **pod** не будет запланирован на master нодах.
+  and this means that the **pod** do not be scheduled to the master nodes.
 
-  Из документации по **Taints and Tolerations** <https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/>:
+  It described in documentation **Taints and Tolerations** <https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/>:
 
   ```plain
   The taint has key key, value value, and taint effect NoSchedule. This means that no pod will be able to schedule onto node1 unless it has a matching toleration.
   ```
 
-  то есть, чтобы отключить **NoSchedule**, и запустить **pod** на master нодах, то нужно добавить **tolerations**:
+  so if you would like to disable **NoSchedule** and start the **pod** on the master nodes you have to add **tolerations**:
 
   ```yaml
         tolerations:
@@ -58,9 +58,9 @@
             effect: NoSchedule
   ```
 
-## EX-3.2 Как запустить проект
+## EX-3.2 How to start the project
 
-Применить манифесты из каталога `kubernetes-controllers`:
+Apply the manifests from `kubernetes-controllers` directory:
 
 ```bash
 kubectl apply -f paymentservice-deployment-bg.yaml
@@ -68,9 +68,9 @@ kubectl apply -f frontend-deployment.yaml
 kubectl apply -f node-exporter-daemonset.yaml
 ```
 
-## EX-3.3 Как проверить проект
+## EX-3.3 How to check the project
 
-* Проверить запущенные deployment:
+* Check that the deployments are started and in the ready state:
 
   ```bash
   kubectl get deployments.apps
@@ -79,7 +79,7 @@ kubectl apply -f node-exporter-daemonset.yaml
   paymentservice   3/3     3            3           3h20m
   ```
 
-* Проверить запущенные daemonset:
+* Check that the daemonsets are started and in the ready state:
 
   ```bash
   kubectl get daemonsets.apps
@@ -87,9 +87,9 @@ kubectl apply -f node-exporter-daemonset.yaml
   node-exporter   6         6         6       6            6           <none>          101m
   ```
 
-## EX-3.4 Как начать пользоваться проектом
+## EX-3.4 How to use the project
 
-* Получить метрики отдаваемые node exporter:
+* Get node exporter metrics:
 
   ```bash
   kubectl port-forward <node-exporter-pod-here> 9100:9100

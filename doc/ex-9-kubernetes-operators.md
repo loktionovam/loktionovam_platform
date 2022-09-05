@@ -1,23 +1,23 @@
 # EX-9 Custom Resource Definitions. Operators
 
 * [EX-9 Custom Resource Definitions. Operators](#ex-9-custom-resource-definitions-operators)
-  * [EX-9.1 Что было сделано](#ex-91-%d0%a7%d1%82%d0%be-%d0%b1%d1%8b%d0%bb%d0%be-%d1%81%d0%b4%d0%b5%d0%bb%d0%b0%d0%bd%d0%be)
-  * [EX-9.2 Как запустить проект](#ex-92-%d0%9a%d0%b0%d0%ba-%d0%b7%d0%b0%d0%bf%d1%83%d1%81%d1%82%d0%b8%d1%82%d1%8c-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82)
-  * [EX-9.3 Как проверить проект](#ex-93-%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%be%d0%b2%d0%b5%d1%80%d0%b8%d1%82%d1%8c-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82)
-  * [EX-9.4 Как начать пользоваться проектом](#ex-94-%d0%9a%d0%b0%d0%ba-%d0%bd%d0%b0%d1%87%d0%b0%d1%82%d1%8c-%d0%bf%d0%be%d0%bb%d1%8c%d0%b7%d0%be%d0%b2%d0%b0%d1%82%d1%8c%d1%81%d1%8f-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82%d0%be%d0%bc)
+  * [EX-9.1 What was done](#ex-91-what-was-done)
+  * [EX-9.2 How to start the project](#ex-92-how-to-start-the-project)
+  * [EX-9.3 How to check the project](#ex-93-how-to-check-the-project)
+  * [EX-9.4 How to use the project](#ex-94-how-to-use-the-project)
 
-## EX-9.1 Что было сделано
+## EX-9.1 What was done
 
-* Основное задание: создать и применить CR, CRD для mysql с валидацией схемы
-* Основное задание: добавить в CRD обязательные поля
-* Основное занятие: mysql оператор, управляющий persistent volume, persistent volume claim, deployment, service
-* Основное занятие: деплой mysql оператора
-* Задание со(*): обновление `subresource status` через оператор
-* Задание со(*): смена пароля от mysql, при изменении этого параметра в описании mysql-instance
+* Main task 1: develop and apply CR, CRD for mysql with scheme validation
+* Main task2: add mandatory fields to the CRD
+* Main task3: develop mysql operator to manage a persistent volume, a persistent volume claim, a deployment and a service
+* Main task4: deploy mysql operator
+* Advanced task 1 (*): update `subresource status` via the operator
+* Advanced task 2 (*): if password in mysql-instance resource is changed a mysql password of the deployed instance should be changed too
 
-Вопрос: почему объект создался, хотя мы создали CR, до того, как запустили контроллер?
+The question: why was the objects created despite the fact that CR had been created BEFORE the operator was started?
 
-Ответ: объект создался потому что, каждый раз, когда запускается kopf based оператор он проверяет состоянием обслуживаемых их ресурсов и если состояние изменилось с момента, когда оно было последний раз обработано, то запускается новый цикл обработки, таким образом реализуется `level triggering`.
+The answer: the object was created by the operator because every time when the kopf base operator is started it checks the state of served resources and if the state is changed since the last start then a new reconciliation cycle is started that is knows as `level triggering`
 
 ```plain
 If the operator is down and not running, any changes to the objects are ignored and not handled. They will be handled when the operator starts: every time a Kopf-based operator starts, it lists all objects of the served resource kind, and checks for their state; if the state has changed since the object was last handled (no matter how long time ago), a new handling cycle starts.
@@ -25,9 +25,9 @@ If the operator is down and not running, any changes to the objects are ignored 
 Only the last state is taken into account. All the intermediate changes are accumulated and handled together. This corresponds to the Kubernetes’s concept of eventual consistency and level triggering (as opposed to edge triggering).
 ```
 
-Взято отсюда: <https://kopf.readthedocs.io/en/latest/continuity/#downtime>
+This is described here: <https://kopf.readthedocs.io/en/latest/continuity/#downtime>
 
-## EX-9.2 Как запустить проект
+## EX-9.2 How to start the project
 
 ```bash
 kubectl apply -f kubernetes-operators/deploy/crd.yml
@@ -36,18 +36,18 @@ kubectl apply -f kubernetes-operators/deploy/cr.yml
 misc/scripts/fill_mysql_instance.sh
 ```
 
-## EX-9.3 Как проверить проект
+## EX-9.3 How to check the project
 
-* Удалить запущенный проект, а затем заново создать - данные должны будут сохраниться и восстановиться через backup/restore jobs
+* Remove the started project and recreate it again - the data will be saved and restored via the backup/restore jobs
 
   ```bash
-  # Удаляем запущенный mysql
+  # remove started mysql
   delete mysqls.otus.homework mysql-instance
 
-  # Заново создаем
+  # recreate it again
   kubectl apply -f kubernetes-operators/deploy/cr.yml
 
-  # Проверяем, что данные на месте
+  # check the data out
   export MYSQLPOD=$(kubectl get pods -l app=mysql-instance -o jsonpath="{.items[*].metadata.name}")
   kubectl exec -it $MYSQLPOD -- mysql -potuspassword -e "select * from test;" otus-database
   mysql: [Warning] Using a password on the command line interface can be insecure.
@@ -59,7 +59,7 @@ misc/scripts/fill_mysql_instance.sh
   +----+-------------+
   ```
 
-* Проверить, что backup/restore jobs отработали без ошибок
+* Check that the backup/restore jobs completed without errors:
 
   ```bash
   kubectl get jobs
@@ -68,14 +68,14 @@ misc/scripts/fill_mysql_instance.sh
   restore-mysql-instance-job   1/1           20s        75s
   ```
 
-* (*) Запись в `status subresources` реализуется включением `/apis/otus.homework/v1/namespaces/default/mysqls/mysql-instance/status` эндпоинта в crd:
+* (*) To update `status subresources` we have to enable `/apis/otus.homework/v1/namespaces/default/mysqls/mysql-instance/status` endpoint in the crd:
 
   ```yaml
     subresources:
     status: {}
   ```
 
-  и обновлением статуса ресурса через вызов `patch_namespaced_custom_object_status`:
+  and update the status by invoking `patch_namespaced_custom_object_status`:
 
   ```python
     ...
@@ -94,7 +94,7 @@ misc/scripts/fill_mysql_instance.sh
         print("Exception when calling CustomObjectsApi->get_namespaced_custom_object: %s\n" % e)
   ```
 
-  Чтобы проверить, что `status subresource` обновился нужно обратиться к `/apis/otus.homework/v1/namespaces/default/mysqls/mysql-instance/status` эндпоинту:
+  Check the `status subresource` `/apis/otus.homework/v1/namespaces/default/mysqls/mysql-instance/status` endpoint:
 
   ```bash
   kubectl proxy --port=8080
@@ -106,7 +106,7 @@ misc/scripts/fill_mysql_instance.sh
   }
   ```
 
-  Либо можно проверить вывод `kubectl describe`:
+  It also will be printed in `kubectl describe`:
 
   ```bash
   kubectl describe mysqls.otus.homework mysql-instance
@@ -143,15 +143,15 @@ misc/scripts/fill_mysql_instance.sh
 
   ```
 
-* (*) Автоматическая смена пароля реализуется в `@kopf.on.update`, аналогично `@kopf.on.delete`, причем старый пароль мы можем узнать из аннотации `kopf.zalando.org/last-handled-configuration`:
+* (*) Password autochange is implemented by usage of `@kopf.on.update` decorator. It similar to `@kopf.on.delete` and the old password is stored in the resource annotation (**do not do this in production**!) `kopf.zalando.org/last-handled-configuration`:
 
   ```bash
-  # Меняем пароль с 'otuspassword' на 'newpassword'
+  # change the password
   kubectl apply -f kubernetes-operators/deploy/cr-passwd.yml
   ```
 
   ```bash
-  # В логах видим, что событие обработано
+  # the event is processed
   [2020-03-05 23:13:57,381] root                 [INFO    ] Old password: 'otuspassword'
   [2020-03-05 23:13:57,381] root                 [INFO    ] New password: 'newpassword'
   [2020-03-05 23:13:57,381] root                 [INFO    ] otus-database
@@ -164,7 +164,7 @@ misc/scripts/fill_mysql_instance.sh
   ```
 
   ```bash
-  # Подключаемся с новым паролем
+  # connect with the new password
   kubectl exec -ti mysql-instance-6c76bcf945-vngx8 -- mysql -u root -pnewpassword -e 'show databases;'
   mysql: [Warning] Using a password on the command line interface can be insecure.
   +--------------------+
@@ -179,4 +179,4 @@ misc/scripts/fill_mysql_instance.sh
 
   ```
 
-## EX-9.4 Как начать пользоваться проектом
+## EX-9.4 How to use the project

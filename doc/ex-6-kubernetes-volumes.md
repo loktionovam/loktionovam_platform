@@ -1,40 +1,40 @@
 # EX-6 Volumes, Storages, StatefulSet
 
 * [EX-6 Volumes, Storages, StatefulSet](#ex-6-volumes-storages-statefulset)
-  * [EX-6.1 Что было сделано](#ex-61-%d0%a7%d1%82%d0%be-%d0%b1%d1%8b%d0%bb%d0%be-%d1%81%d0%b4%d0%b5%d0%bb%d0%b0%d0%bd%d0%be)
-  * [EX-6.2 Как запустить проект](#ex-62-%d0%9a%d0%b0%d0%ba-%d0%b7%d0%b0%d0%bf%d1%83%d1%81%d1%82%d0%b8%d1%82%d1%8c-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82)
-  * [EX-6.3 Как проверить проект](#ex-63-%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%be%d0%b2%d0%b5%d1%80%d0%b8%d1%82%d1%8c-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82)
-  * [EX-6.4 Как начать пользоваться проектом](#ex-64-%d0%9a%d0%b0%d0%ba-%d0%bd%d0%b0%d1%87%d0%b0%d1%82%d1%8c-%d0%bf%d0%be%d0%bb%d1%8c%d0%b7%d0%be%d0%b2%d0%b0%d1%82%d1%8c%d1%81%d1%8f-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82%d0%be%d0%bc)
+  * [EX-6.1 What was done](#ex-61-what-was-done)
+  * [EX-6.2 How to start the project](#ex-62-how-to-start-the-project)
+  * [EX-6.3 How to check the project](#ex-63-how-to-check-the-project)
+  * [EX-6.4 How to use the project](#ex-64-how-to-use-the-project)
 
-* [x] Основное задание: создание statefulset
-* [x] Задание со (*): использовать `kubernetes secrets` для задания секретных данных в MinIO
+* [x] Main task 1: create a statefulset
+* [x] Advanced task (*): use `kubernetes secrets` to storing MinIO secret data
 
-## EX-6.1 Что было сделано
+## EX-6.1 What was done
 
-* Добавлен манифест `minio-statefulset.yaml`, создан StatefulSet с MinIo
-* Добавлен манифест `minio-headless-service.yaml`, создан Headless Service для доступа к StatefulSet изнутри кластера
-* Добавлен скрипт `misc/scripts/generate_minio_secret.sh` для генерации манифеста с секретами
-* (*) Добавлено использование секретов в MinIO StatefulSet
-* (*) Добавлен манифест `minio-client.yaml` и скрипт `misc/scripts/check_minio.sh` проверяющий, что секреты работают и сам MinIO сервер тоже работает
+* Developed `minio-statefulset.yaml`, created MinIo StatefulSet
+* Developed `minio-headless-service.yaml`, created Headless Service to access to a StatefulSet inside of the cluster
+* Added `misc/scripts/generate_minio_secret.sh` to generate the MinIO secrets
+* (*) Added secrets usage to MinIO StatefulSet
+* (*) Added `minio-client.yaml` and `misc/scripts/check_minio.sh` to check that the secrets work and the MinIO server also works
 
-## EX-6.2 Как запустить проект
+## EX-6.2 How to start the project
 
-* Создать секрет для MinIO скриптом `misc/scripts/generate_minio_secret.sh`. Сам скрипт не создает секрет, а только выводит манифест в stdout:
+* Create a MinIO secret by `misc/scripts/generate_minio_secret.sh`. The script only prints the manifest to a stdout and does not create the secret:
 
   ```bash
   misc/scripts/generate_minio_secret.sh <minio_access_key_here> <minio_secret_key_here> | kubectl apply -f -
   ```
 
-* Создать StatefulSet MinIO и сервис для доступа к нему:
+* Create MinIO StatefulSet and a service:
 
   ```bash
   kubectl apply -f kubernetes-volumes/minio-statefulset.yaml
   kubectl apply -f kubernetes-volumes/minio-headless-service.yaml
   ```
 
-## EX-6.3 Как проверить проект
+## EX-6.3 How to check the project
 
-* Из корня проекта выполнить скрипт `misc/scripts/check_minio.sh`, который создаст Pod с `mc`, создаст `bucket` в который скопирует файл `alpine-release` и выведет листинг этого `bucket`. При успешном завершении, будет выведено:
+* Execute `misc/scripts/check_minio.sh` from the root of the project which creates a Pod with `mc`, creates `bucket` in which `alpine-release` file will be copied and prints the `bucket` listing. On success you will see:
 
   ```bash
   misc/scripts/check_minio.sh
@@ -45,6 +45,4 @@
   /etc/alpine-release:  7 B / 7 B  5.29 KiB/s 0s[2020-01-30 19:18:34 UTC]      7B alpine-release
   ```
 
-## EX-6.4 Как начать пользоваться проектом
-
-* Задание учебное и не предполагает, что им будут "пользоваться".
+## EX-6.4 How to use the project

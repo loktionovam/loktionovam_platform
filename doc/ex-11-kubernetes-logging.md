@@ -1,27 +1,27 @@
 <!-- EX должны нумероваться так, как они идут в ЛК otus -->
 
-# EX-11 Название домашней работы
+# EX-11 Centralized Logging
 
-* [EX-11 Название домашней работы](#ex-11-%d0%9d%d0%b0%d0%b7%d0%b2%d0%b0%d0%bd%d0%b8%d0%b5-%d0%b4%d0%be%d0%bc%d0%b0%d1%88%d0%bd%d0%b5%d0%b9-%d1%80%d0%b0%d0%b1%d0%be%d1%82%d1%8b)
-  * [EX-11.1 Что было сделано](#ex-111-%d0%a7%d1%82%d0%be-%d0%b1%d1%8b%d0%bb%d0%be-%d1%81%d0%b4%d0%b5%d0%bb%d0%b0%d0%bd%d0%be)
-  * [EX-11.2 Как запустить проект](#ex-112-%d0%9a%d0%b0%d0%ba-%d0%b7%d0%b0%d0%bf%d1%83%d1%81%d1%82%d0%b8%d1%82%d1%8c-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82)
-  * [EX-11.3 Как проверить проект](#ex-113-%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%be%d0%b2%d0%b5%d1%80%d0%b8%d1%82%d1%8c-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82)
-  * [EX-11.4 Как начать пользоваться проектом](#ex-114-%d0%9a%d0%b0%d0%ba-%d0%bd%d0%b0%d1%87%d0%b0%d1%82%d1%8c-%d0%bf%d0%be%d0%bb%d1%8c%d0%b7%d0%be%d0%b2%d0%b0%d1%82%d1%8c%d1%81%d1%8f-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82%d0%be%d0%bc)
+* [EX-11 Centralized Logging](#ex-11-%d0%9d%d0%b0%d0%b7%d0%b2%d0%b0%d0%bd%d0%b8%d0%b5-%d0%b4%d0%be%d0%bc%d0%b0%d1%88%d0%bd%d0%b5%d0%b9-%d1%80%d0%b0%d0%b1%d0%be%d1%82%d1%8b)
+  * [EX-11.1 What was done](#ex-111-%d0%a7%d1%82%d0%be-%d0%b1%d1%8b%d0%bb%d0%be-%d1%81%d0%b4%d0%b5%d0%bb%d0%b0%d0%bd%d0%be)
+  * [EX-11.2 How to start the project](#ex-112-%d0%9a%d0%b0%d0%ba-%d0%b7%d0%b0%d0%bf%d1%83%d1%81%d1%82%d0%b8%d1%82%d1%8c-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82)
+  * [EX-11.3 How to check the project](#ex-113-%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%be%d0%b2%d0%b5%d1%80%d0%b8%d1%82%d1%8c-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82)
+  * [EX-11.4 How to use the project](#ex-114-%d0%9a%d0%b0%d0%ba-%d0%bd%d0%b0%d1%87%d0%b0%d1%82%d1%8c-%d0%bf%d0%be%d0%bb%d1%8c%d0%b7%d0%be%d0%b2%d0%b0%d1%82%d1%8c%d1%81%d1%8f-%d0%bf%d1%80%d0%be%d0%b5%d0%ba%d1%82%d0%be%d0%bc)
 
-## EX-11.1 Что было сделано
+## EX-11.1 What was done
 
-* [x] Основное задание: развернут infra pool (3 nodes), default pool (1 node) в GKE, исправлена конфигурация terraform
-* [x] Основное задание: установлен EFK для сбора и визуализации логов
-* [x] Основное задание: установлен prometheus operator (promethues, grafana, alertmanager) для мониторинга elasticsearch
-* [x] Основное задание: установлен elasticsearch exporter, настроен алерт `ElasticsearchTooFewNodesRunning`, в grafana добавлен дашборд для визуализации метрик elasticsearch
-* [x] Основное задание: сбор и визуализация логов nginx (nginx-total, nginx-2xx, nginx-3xx, nginx-4xx, nginx-5xx), дашборд для логов nginx в kibana
-* [x] Основное задание: сбор и визуализация логов nginx с помощью loki, визуализации логов в grafana
-* [x] Задание со (*): сбор логов виртуальных машин на которых запущен k8s через `systemd input plugin` и визуализация логов для `sshd`
-* [x] Задание со (*): развернуть self-hosted кластер и настроить сбор аудит логов
+* [x] Main task 1: deployed GKE infra pool (3 nodes), default pool (1 node), fixed the terraform configuration
+* [x] Main task 2: installed EFK for logs collection and visualization
+* [x] Main task 3: installed prometheus operator (promethues, grafana, alertmanager) to monitor an elasticsearch
+* [x] Main task 4: installed elasticsearch exporter, configured an alert `ElasticsearchTooFewNodesRunning`, added an elasticsearch dashboard to grafana
+* [x] Main task 5: nginx logs collecting and visualizing (nginx-total, nginx-2xx, nginx-3xx, nginx-4xx, nginx-5xx), a nginx logs dashboard in kibana
+* [x] Main task 6: nginx logs collecting and visualizing via loki, logs visualizing in the grafana
+* [x] Advanced task 1 (*): k8s VMs logs collecting via `systemd input plugin`. Visualizing `sshd` logs
+* [x] Advanced task 2 (*): deploy a self-hosted cluster and setup collecting audits logs
 
-## EX-11.2 Как запустить проект
+## EX-11.2 How to start the project
 
-* Развернуть infra pool и default pool в GKE
+* Deploy the infra pool и the default pool into GKE
 
   ```bash
   cd infra/kubernetes/terraform
@@ -32,20 +32,20 @@
   terraform apply
   ```
 
-* Настроить kubectl для доступа к кластеру
+* Setup kubectl to access to the newly created cluster:
 
   ```bash
   gcloud beta container clusters get-credentials primary --zone europe-west1-b
   ```
 
-* Настроить taints для infra нод кластера
+* Setup `taints` for infra nodes
 
   ```bash
   kubectl get nodes
   kubectl taint nodes <infra node here> node-role=infra:NoSchedule
   ```
 
-* Установить helm charts
+* Install the helm charts
 
   ```yaml
   cd kubernetes-logging/
@@ -67,19 +67,19 @@
   helm upgrade --install loki loki/loki-stack --wait --namespace=observability --values=loki.values.yaml
   ```
 
-Есть проблема [Add datasource by configuration to Grafana does not work](https://github.com/coreos/prometheus-operator/issues/1909) из-за чего `datasource` не обновляются sidecar контейнером grafana-sc-datasources. Простейшее решение - удалить pod grafana, тогда после его автоматического пересоздания, sidecar контейнер отработает и loki добавится в список datasource:
+There is a problem [Add datasource by configuration to Grafana does not work](https://github.com/coreos/prometheus-operator/issues/1909) and because of that the `datasource` are not updated by grafana-sc-datasources sidecar container. The simplest solution is to remove a grafana pod, the sidecar container will be recreated too and the loki will be added to a datasource list:
 
 ```bash
 kubectl delete pods prometheus-operator-grafana-7454c9d578-prqzk
 ```
 
-* Для сбора логов аудита нужно выполнить бутстрап кластера:
+* To collect the audit logs you have to bootstrap a cluster:
 
   ```bash
   misc/scripts/create_rancher_cluster.sh
   ```
 
-  применить конфигурацию `kubernetes-logging/audit/rancher/k8s-logging.yaml` для включения логов аудита, установить elasticsearch и fluent-bit:
+  apply the configuration `kubernetes-logging/audit/rancher/k8s-logging.yaml` to enable the audit logs and install the elasticsearch and fluent-bit:
 
   ```bash
   cd kubernetes-logging/audit
@@ -89,13 +89,13 @@ kubectl delete pods prometheus-operator-grafana-7454c9d578-prqzk
   helm upgrade --install kibana elastic/kibana --wait --namespace observability -f kibana.values.yaml
   ```
 
-  и импортировать в kibana дашборд `kubernetes-logging/audit/export.ndjson`, который отображает количество `create` и `update` событий в кластере в минуту.
+  Then import `kubernetes-logging/audit/export.ndjson` dashboard into the kibana which shows how many `create` and `update` events per minute in the cluster.
 
-## EX-11.3 Как проверить проект
+## EX-11.3 How to check the project
 
-* В kibana <http://kibana.34.77.166.162.xip.io> есть дашборды для отображения запросов в nginx ingress и sshd
+* Here <http://kibana.34.77.166.162.xip.io> there are dashboards to display sshd and nginx ingress requests
   ![kibana-sshd-dashboard](img/ex-11-kubernetes-logging-kibana-sshd.png)
-* В grafana по адресу <http://grafana.34.77.166.162.xip.io> отображаются логи и метрики для nginx ingress controller
+* Here <http://grafana.34.77.166.162.xip.io> nginx ingress controller logs and metrics are shown
   ![grafana-nginx-ingress-dashboard](img/ex-11-kubernetes-logging-grafana-nginx-ingress.png)
 
-## EX-11.4 Как начать пользоваться проектом
+## EX-11.4 How to use the project
